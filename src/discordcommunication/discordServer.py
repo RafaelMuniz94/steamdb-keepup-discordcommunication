@@ -1,44 +1,36 @@
 from flask import Flask, request,jsonify
+from Services.PayloadMappingService import PayloadMappingService
+#import requests
+import httpx
+from Utils.configuration import Configuration
 import json
-import requests
+
 
 app = Flask(__name__)
+config = Configuration()
 
-url = ""
-
-@app.route('/',methods=['GET'])
-def getOK():
-    return "p",200
 
 @app.route('/send',methods=['POST'])
-def EnviaPayloadDiscord():
+async def EnviaPayloadDiscord():
     try:
         content = request.json
-        
-        js = {
-            "appid":content["appid"],
-            "Quantidade": content["count"],
-            "Data": content["date"]
-        }
-    
-        payload = {
-                "content" : json.dumps(js),
-                "username" : "GamesInfo"
-                }
-        payload["embeds"] = [
-    {
-        "description" : content["newsitems"][0]["news_date"],
-        "url": content["newsitems"][0]["url"],
-        "title" : content["newsitems"][0]["title"]
-    }
-]
 
-        response = requests.post(url=url,json =payload)
-        return jsonify(response)
+        payload = PayloadMappingService(config).Map(content)
+        
+        for news in payload:
+            news = json.dumps(news,ensure_ascii=False)
+            print(news)
+            print(type(news))
+            print('+++++++++++')
+            response = await httpx.AsyncClient().post(url=config.webhook_url, json = news)
+            print(response.json())
+        
+        return "ok"
     except Exception as error:
         print(error)
         return error
     ##client = requests.post()
 
-# if __name__ == '__main__':
-app.run(host="0.0.0.0",port=5001, debug=True)
+
+
+app.run(host=config.host,port=config.port, debug=config.debug)

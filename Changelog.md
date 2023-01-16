@@ -1,3 +1,14 @@
+# 3 - Sending multiple messages - [16/01/2023]
+
+- [X] Send multiple apps and more than 10 news at once
+
+**Changed Files**
+
+        modified:   Changelog.md
+        modified:   src/discordcommunication/discordServer.py
+
+---
+
 # 2 - Sending multiple messages - [10/01/2023]
 
 - [] Send multiple apps and more than 10 news at once

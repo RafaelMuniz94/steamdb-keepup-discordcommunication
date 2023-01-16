@@ -18,12 +18,13 @@ async def EnviaPayloadDiscord():
         payload = PayloadMappingService(config).Map(content)
         
         for news in payload:
-            news = json.dumps(news,ensure_ascii=False)
+            #news = json.loads(news,ensure_ascii=False)
+            print(len(payload))
             print(news)
             print(type(news))
             print('+++++++++++')
             response = await httpx.AsyncClient().post(url=config.webhook_url, json = news)
-            print(response.json())
+            #print(response.json())
         
         return "ok"
     except Exception as error:

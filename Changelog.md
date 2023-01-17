@@ -1,3 +1,13 @@
+# 3.1 - Code cleaning and responses improvement - [16/01/2023]
+
+**Changed Files**
+
+        modified:   Changelog.md
+        modified:   src/discordcommunication/Services/PayloadMappingService.py
+        modified:   src/discordcommunication/discordServer.py
+
+---
+
 # 3 - Sending multiple messages - [16/01/2023]
 
 - [X] Send multiple apps and more than 10 news at once

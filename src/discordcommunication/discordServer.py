@@ -1,9 +1,7 @@
-from flask import Flask, request,jsonify
+from flask import Flask, request,jsonify,Response
 from Services.PayloadMappingService import PayloadMappingService
-#import requests
 import httpx
 from Utils.configuration import Configuration
-import json
 
 
 app = Flask(__name__)
@@ -16,20 +14,22 @@ async def EnviaPayloadDiscord():
         content = request.json
 
         payload = PayloadMappingService(config).Map(content)
+
+        responses = []
         
         for news in payload:
-            #news = json.loads(news,ensure_ascii=False)
-            print(len(payload))
-            print(news)
-            print(type(news))
-            print('+++++++++++')
             response = await httpx.AsyncClient().post(url=config.webhook_url, json = news)
-            #print(response.json())
-        
-        return "ok"
+            if response.text != "":
+                responses.append(response.text)
+
+        if len(responses) > 0:
+            jsonResponses =  jsonify(responses)
+            return Response(jsonResponses,status=200,mimetype='application/json')
+        else:
+            return Response(status=200,mimetype='application/json')
     except Exception as error:
         print(error)
-        return error
+        return Response("Ocorreu um erro!",status=500,mimetype='application/json')
     ##client = requests.post()
 
 
